@@ -1,0 +1,673 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NJ Transit Bus Incident &mdash; Holland Tunnel, March 11, 2026</title>
+<style>
+  :root {
+    --bg: #f8f9fa;
+    --card: #ffffff;
+    --text: #1a1a2e;
+    --muted: #555;
+    --accent: #c0392b;
+    --border: #dee2e6;
+    --section-bg: #f1f3f5;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+  }
+
+  /* Header */
+  .header {
+    background: var(--text);
+    color: #fff;
+    padding: 2.5rem 1.5rem 2rem;
+    text-align: center;
+  }
+  .header h1 { font-size: 1.75rem; font-weight: 700; margin-bottom: 0.25rem; }
+  .header .subtitle { font-size: 1rem; color: #adb5bd; font-weight: 400; }
+  .header .badge {
+    display: inline-block; background: var(--accent); color: #fff;
+    padding: 0.3rem 1rem; border-radius: 4px; font-size: 0.85rem;
+    font-weight: 600; margin-top: 0.75rem; letter-spacing: 0.03em;
+  }
+
+  /* Layout */
+  .container { max-width: 960px; margin: 0 auto; padding: 0 1.25rem; }
+  section { margin: 2.5rem 0; }
+  section h2 {
+    font-size: 1.35rem; font-weight: 700; margin-bottom: 1rem;
+    padding-bottom: 0.5rem; border-bottom: 3px solid var(--accent); display: inline-block;
+  }
+
+  /* Fact card grid */
+  .facts {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 1rem; margin-top: 1rem;
+  }
+  .fact-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px; padding: 1.25rem;
+  }
+  .fact-card .label {
+    font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.08em;
+    color: var(--muted); font-weight: 600; margin-bottom: 0.25rem;
+  }
+  .fact-card .value { font-size: 1.05rem; font-weight: 600; }
+  .fact-card .value.highlight { color: var(--accent); }
+
+  /* Narrative */
+  .narrative {
+    background: var(--card); border: 1px solid var(--border);
+    border-left: 4px solid var(--accent); border-radius: 0 8px 8px 0;
+    padding: 1.25rem 1.5rem; margin-top: 1rem; font-size: 0.95rem; color: #333;
+  }
+
+  /* Evidence ID cards */
+  .id-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 1.5rem; margin-top: 1rem;
+  }
+  .id-card {
+    background: var(--card); border: 1px solid var(--border); border-radius: 8px; overflow: hidden;
+  }
+  .id-card img { width: 100%; display: block; cursor: pointer; }
+  .id-card .caption { padding: 0.75rem 1rem; font-size: 0.9rem; }
+  .id-card .caption strong { color: var(--accent); }
+
+  /* Camera sections */
+  .camera-section {
+    background: var(--card); border: 1px solid var(--border);
+    border-radius: 8px; overflow: hidden; margin-bottom: 2rem;
+  }
+  .camera-header {
+    background: var(--section-bg); padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 0.75rem;
+  }
+  .camera-icon {
+    width: 36px; height: 36px; border-radius: 50%; background: var(--text); color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 0.8rem; font-weight: 700; flex-shrink: 0;
+  }
+  .camera-header h3 { font-size: 1.05rem; font-weight: 600; }
+  .camera-header .cam-meta { font-size: 0.8rem; color: var(--muted); }
+  .camera-body { padding: 1.25rem; }
+  .camera-body video { width: 100%; border-radius: 6px 6px 0 0; background: #000; display: block; }
+
+  /* Custom video controls */
+  .video-controls {
+    display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem;
+    background: #1a1a2e; border-radius: 0 0 6px 6px; flex-wrap: wrap;
+  }
+  .video-controls button {
+    background: none; border: none; color: #fff; cursor: pointer; padding: 0.25rem;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .video-controls button svg { width: 22px; height: 22px; }
+  .video-controls button:hover { color: #adb5bd; }
+  .video-progress {
+    flex: 1; min-width: 80px; height: 6px; background: #444; border-radius: 3px;
+    cursor: pointer; position: relative; overflow: hidden;
+  }
+  .video-progress-fill {
+    height: 100%; background: var(--accent); border-radius: 3px; width: 0%;
+    pointer-events: none;
+  }
+  .video-time { font-size: 0.75rem; color: #adb5bd; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  .speed-selector {
+    display: flex; align-items: center; gap: 2px; margin-left: 0.25rem;
+  }
+  .speed-btn {
+    background: #333 !important; border: 1px solid #555 !important; border-radius: 4px !important;
+    color: #ccc !important; font-size: 0.7rem !important; padding: 0.2rem 0.45rem !important;
+    cursor: pointer; font-weight: 600; transition: all 0.1s;
+  }
+  .speed-btn:hover { background: #555 !important; color: #fff !important; }
+  .speed-btn.active { background: var(--accent) !important; border-color: var(--accent) !important; color: #fff !important; }
+
+  .stills-grid {
+    display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1rem; margin-top: 1rem;
+  }
+  .still {
+    border-radius: 6px; overflow: hidden; border: 1px solid var(--border);
+  }
+  .still img { width: 100%; display: block; cursor: pointer; }
+  .still .still-cap {
+    padding: 0.5rem 0.75rem; font-size: 0.85rem; color: var(--muted); background: var(--section-bg);
+  }
+
+  /* Download button */
+  .dl-btn {
+    display: inline-flex; align-items: center; gap: 0.35rem;
+    background: var(--section-bg); border: 1px solid var(--border); border-radius: 5px;
+    padding: 0.3rem 0.7rem; font-size: 0.78rem; color: var(--muted);
+    text-decoration: none; cursor: pointer; margin-top: 0.5rem; transition: background 0.15s;
+  }
+  .dl-btn:hover { background: #e2e6ea; color: var(--text); }
+  .dl-btn svg { width: 14px; height: 14px; }
+  .media-bar {
+    display: flex; align-items: center; gap: 0.75rem; margin-top: 0.5rem; flex-wrap: wrap;
+  }
+
+  /* Damage section */
+  .damage-img {
+    max-width: 500px; border-radius: 8px; border: 1px solid var(--border);
+    margin-top: 1rem; display: block; cursor: pointer;
+  }
+  .damage-caption { margin-top: 0.5rem; font-size: 0.9rem; color: var(--muted); }
+
+  /* Lightbox */
+  .lightbox {
+    display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.92);
+    z-index: 9999; align-items: center; justify-content: center; padding: 2rem;
+  }
+  .lightbox.active { display: flex; }
+  .lightbox img {
+    max-width: 95vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 0 40px rgba(0,0,0,0.5);
+  }
+  .lightbox-close {
+    position: fixed; top: 1rem; right: 1.5rem; background: none; border: none;
+    color: #fff; font-size: 2.5rem; cursor: pointer; z-index: 10000; line-height: 1;
+  }
+  .lightbox-dl {
+    position: fixed; bottom: 1.5rem; left: 50%; transform: translateX(-50%);
+    background: #fff; color: var(--text); padding: 0.5rem 1.5rem; border-radius: 6px;
+    font-size: 0.9rem; font-weight: 600; text-decoration: none; z-index: 10000;
+  }
+  .lightbox-dl:hover { background: #e2e6ea; }
+
+  /* Footer */
+  .footer {
+    text-align: center; padding: 2rem 1rem; font-size: 0.8rem;
+    color: var(--muted); border-top: 1px solid var(--border); margin-top: 3rem;
+  }
+
+  @media (max-width: 600px) {
+    .header h1 { font-size: 1.3rem; }
+    .facts { grid-template-columns: 1fr; }
+    .id-grid { grid-template-columns: 1fr; }
+    .stills-grid { grid-template-columns: 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- LIGHTBOX -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <button class="lightbox-close" onclick="closeLightbox(event)">&times;</button>
+  <img id="lightbox-img" src="" alt="Enlarged view">
+  <a class="lightbox-dl" id="lightbox-dl" href="" download>Download Original</a>
+</div>
+
+<!-- HEADER -->
+<div class="header">
+  <h1>NJ Transit Bus Incident Report</h1>
+  <div class="subtitle">Holland Tunnel &mdash; March 11, 2026</div>
+  <div class="badge">Dashcam Evidence &mdash; 4 Camera Angles</div>
+</div>
+
+<div class="container">
+
+  <!-- INCIDENT SUMMARY -->
+  <section>
+    <h2>Incident Summary</h2>
+    <div class="facts">
+      <div class="fact-card">
+        <div class="label">Date &amp; Time</div>
+        <div class="value">March 11, 2026 &mdash; approx. 9:52 AM ET</div>
+      </div>
+      <div class="fact-card">
+        <div class="label">Location</div>
+        <div class="value">Holland Tunnel (approx. midway), eastbound NJ &rarr; NY</div>
+      </div>
+      <div class="fact-card">
+        <div class="label">At-Fault Vehicle</div>
+        <div class="value highlight">NJ Transit Bus #22054 &mdash; Route 163</div>
+      </div>
+      <div class="fact-card">
+        <div class="label">Damaged Vehicle</div>
+        <div class="value">2026 Tesla Model X</div>
+      </div>
+      <div class="fact-card">
+        <div class="label">Damage</div>
+        <div class="value">Left side mirror destroyed &mdash; $2,367 est. repair</div>
+      </div>
+      <div class="fact-card">
+        <div class="label">Post-Incident</div>
+        <div class="value highlight">Bus did not stop (hit-and-run)</div>
+      </div>
+    </div>
+
+    <div class="narrative">
+      <strong>What happened:</strong> While traveling eastbound through the Holland Tunnel, a NJ Transit bus
+      (Route 163, Bus #22054) in the adjacent left lane had an unsecured luggage bay door that was open and
+      protruding into the neighboring lane. As the bus passed alongside the Tesla Model X, the open bay door
+      struck and destroyed the vehicle's left side mirror. The force of the impact swung the bay door shut.
+      The bus did not stop after the collision. The entire incident was captured on the Tesla's built-in
+      dashcam system from four simultaneous camera angles.
+    </div>
+  </section>
+
+  <!-- BUS IDENTIFICATION -->
+  <section>
+    <h2>Bus Identification</h2>
+    <p style="color:var(--muted); margin-bottom:0.5rem;">Two independent camera angles positively identify the NJ Transit bus involved.</p>
+    <div class="id-grid">
+      <div class="id-card">
+        <img src="evidence/route-163.jpg" alt="Left repeater camera showing Route 163 on bus LED display" onclick="openLightbox(this)">
+        <div class="caption">
+          <strong>Route 163</strong> &mdash; Rear-facing left repeater camera captures the bus's LED route display
+          showing "163" as it approaches from behind in the tunnel. The red box highlights the route number.
+          <div class="media-bar">
+            <a class="dl-btn" href="evidence/route-163.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download</a>
+          </div>
+        </div>
+      </div>
+      <div class="id-card">
+        <img src="evidence/bus-22054.jpg" alt="Front camera showing Bus #22054 on rear of bus" onclick="openLightbox(this)">
+        <div class="caption">
+          <strong>Bus #22054</strong> &mdash; Front camera captures the bus number "22054" printed on the rear
+          upper-left panel of the bus as it pulls ahead after the collision. The red box highlights the bus number.
+          <div class="media-bar">
+            <a class="dl-btn" href="evidence/bus-22054.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VIDEO EVIDENCE -->
+  <section>
+    <h2>Video Evidence &mdash; All Camera Angles</h2>
+    <p style="color:var(--muted); margin-bottom:1.5rem;">
+      The left repeater, left B-pillar, and rear clips cover the final seconds of the Tesla's 1-minute dashcam
+      recording ending at 9:52 AM. The front clip is from the first seconds of the next recording,
+      capturing the bus pulling ahead immediately after the collision.
+      All videos play with controls &mdash; use slow motion or pause to examine key moments.
+      Click any still image to enlarge it. Use the download buttons to save original files.
+    </p>
+
+    <!-- LEFT REPEATER -->
+    <div class="camera-section">
+      <div class="camera-header">
+        <div class="camera-icon">1</div>
+        <div>
+          <h3>Left Repeater Camera</h3>
+          <div class="cam-meta">Rear-facing camera on left fender &mdash; 3.1 seconds</div>
+        </div>
+      </div>
+      <div class="camera-body">
+        <div class="video-wrap">
+          <video preload="metadata" playsinline disablepictureinpicture>
+            <source src="clips/left-repeater.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg></button>
+            <div class="video-progress"><div class="video-progress-fill"></div></div>
+            <span class="video-time">0:00 / 0:00</span>
+            <div class="speed-selector">
+              <button class="speed-btn" data-speed="0.25">0.25x</button>
+              <button class="speed-btn" data-speed="0.5">0.5x</button>
+              <button class="speed-btn active" data-speed="1">1x</button>
+            </div>
+            <button class="fullscreen-btn" aria-label="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg></button>
+          </div>
+        </div>
+        <div class="media-bar">
+          <a class="dl-btn" href="clips/left-repeater.mp4" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download Video</a>
+        </div>
+        <p style="margin-top:0.75rem; font-size:0.9rem; color:var(--muted);">
+          This is the most critical angle. The rear-facing left repeater captures the NJ Transit bus approaching
+          from behind, showing the Route 163 LED display and the open luggage bay door protruding from the side
+          of the bus as it passes inches from the Tesla.
+        </p>
+        <div class="stills-grid">
+          <div class="still">
+            <img src="evidence/left-repeater-approach.jpg" alt="Bus alongside with open bay door" onclick="openLightbox(this)">
+            <div class="still-cap">
+              Bus alongside &mdash; NJ Transit livery and open bay door visible
+              <div class="media-bar"><a class="dl-btn" href="evidence/left-repeater-approach.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download</a></div>
+            </div>
+          </div>
+          <div class="still">
+            <img src="evidence/left-repeater-bay-door.jpg" alt="Open bay door visible on bus side" onclick="openLightbox(this)">
+            <div class="still-cap">
+              Open bay door protruding from bus side
+              <div class="media-bar"><a class="dl-btn" href="evidence/left-repeater-bay-door.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- LEFT B-PILLAR -->
+    <div class="camera-section">
+      <div class="camera-header">
+        <div class="camera-icon">2</div>
+        <div>
+          <h3>Left B-Pillar Camera</h3>
+          <div class="cam-meta">Side-facing camera on driver's side B-pillar &mdash; 1.2 seconds</div>
+        </div>
+      </div>
+      <div class="camera-body">
+        <div class="video-wrap">
+          <video preload="metadata" playsinline disablepictureinpicture data-default-speed="0.25">
+            <source src="clips/left-pillar.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg></button>
+            <div class="video-progress"><div class="video-progress-fill"></div></div>
+            <span class="video-time">0:00 / 0:00</span>
+            <div class="speed-selector">
+              <button class="speed-btn active" data-speed="0.25">0.25x</button>
+              <button class="speed-btn" data-speed="0.5">0.5x</button>
+              <button class="speed-btn" data-speed="1">1x</button>
+            </div>
+            <button class="fullscreen-btn" aria-label="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg></button>
+          </div>
+        </div>
+        <div class="media-bar">
+          <a class="dl-btn" href="clips/left-pillar.mp4" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download Video</a>
+        </div>
+        <p style="margin-top:0.75rem; font-size:0.9rem; color:var(--muted);">
+          This camera faces directly out the driver's side. The bus body fills the entire frame, demonstrating
+          the extreme proximity. The open luggage bay door is clearly visible hanging open on the bus.
+        </p>
+        <div class="stills-grid">
+          <div class="still">
+            <img src="evidence/left-pillar-closeup.jpg" alt="Bus body filling the frame from B-pillar camera" onclick="openLightbox(this)">
+            <div class="still-cap">
+              Bus body fills the entire frame &mdash; extreme proximity, no clearance
+              <div class="media-bar"><a class="dl-btn" href="evidence/left-pillar-closeup.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download</a></div>
+            </div>
+          </div>
+          <div class="still">
+            <img src="evidence/left-pillar-bay.jpg" alt="Open bay door hanging open on bus - final frame" onclick="openLightbox(this)">
+            <div class="still-cap">
+              Open luggage bay door visible hanging from the bus
+              <div class="media-bar"><a class="dl-btn" href="evidence/left-pillar-bay.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FRONT -->
+    <div class="camera-section">
+      <div class="camera-header">
+        <div class="camera-icon">3</div>
+        <div>
+          <h3>Front Camera</h3>
+          <div class="cam-meta">Forward-facing main dashcam &mdash; 4.4 seconds (from next recording)</div>
+        </div>
+      </div>
+      <div class="camera-body">
+        <div class="video-wrap">
+          <video preload="metadata" playsinline disablepictureinpicture>
+            <source src="clips/front.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg></button>
+            <div class="video-progress"><div class="video-progress-fill"></div></div>
+            <span class="video-time">0:00 / 0:00</span>
+            <div class="speed-selector">
+              <button class="speed-btn" data-speed="0.25">0.25x</button>
+              <button class="speed-btn" data-speed="0.5">0.5x</button>
+              <button class="speed-btn active" data-speed="1">1x</button>
+            </div>
+            <button class="fullscreen-btn" aria-label="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg></button>
+          </div>
+        </div>
+        <div class="media-bar">
+          <a class="dl-btn" href="clips/front.mp4" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download Video</a>
+        </div>
+        <p style="margin-top:0.75rem; font-size:0.9rem; color:var(--muted);">
+          The front camera then shows the bus
+          pulling ahead immediately after the collision. Bus #22054 is clearly readable on the rear panel.
+          Note that the bay door is no longer open in this footage &mdash; the force of striking the mirror
+          swung it shut. The bus continues ahead without stopping.
+        </p>
+        <div class="stills-grid">
+          <div class="still">
+            <img src="evidence/bus-22054.jpg" alt="Bus number 22054 clearly visible" onclick="openLightbox(this)">
+            <div class="still-cap">
+              Bus #22054 clearly identifiable as it pulls ahead
+              <div class="media-bar"><a class="dl-btn" href="evidence/bus-22054.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download</a></div>
+            </div>
+          </div>
+          <div class="still">
+            <img src="evidence/front-bus-ahead.jpg" alt="Bus continuing ahead without stopping" onclick="openLightbox(this)">
+            <div class="still-cap">
+              Bus #22054 continues ahead &mdash; does not stop after the collision
+              <div class="media-bar"><a class="dl-btn" href="evidence/front-bus-ahead.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BACK -->
+    <div class="camera-section">
+      <div class="camera-header">
+        <div class="camera-icon">4</div>
+        <div>
+          <h3>Rear Camera</h3>
+          <div class="cam-meta">Rear-facing dashcam &mdash; 3.0 seconds</div>
+        </div>
+      </div>
+      <div class="camera-body">
+        <div class="video-wrap">
+          <video preload="metadata" playsinline disablepictureinpicture>
+            <source src="clips/back.mp4" type="video/mp4">
+          </video>
+          <div class="video-controls">
+            <button class="play-btn" aria-label="Play"><svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg></button>
+            <div class="video-progress"><div class="video-progress-fill"></div></div>
+            <span class="video-time">0:00 / 0:00</span>
+            <div class="speed-selector">
+              <button class="speed-btn" data-speed="0.25">0.25x</button>
+              <button class="speed-btn" data-speed="0.5">0.5x</button>
+              <button class="speed-btn active" data-speed="1">1x</button>
+            </div>
+            <button class="fullscreen-btn" aria-label="Fullscreen"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8 3H5a2 2 0 00-2 2v3m18 0V5a2 2 0 00-2-2h-3m0 18h3a2 2 0 002-2v-3M3 16v3a2 2 0 002 2h3"/></svg></button>
+          </div>
+        </div>
+        <div class="media-bar">
+          <a class="dl-btn" href="clips/back.mp4" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download Video</a>
+        </div>
+        <p style="margin-top:0.75rem; font-size:0.9rem; color:var(--muted);">
+          The rear camera provides additional context showing the bus passing from behind. The NJ Transit
+          livery and route 163 LED sign are visible as the bus moves through the adjacent lane.
+        </p>
+        <div class="stills-grid">
+          <div class="still">
+            <img src="evidence/back-bus-passing.jpg" alt="Bus visible from rear camera" onclick="openLightbox(this)">
+            <div class="still-cap">
+              Bus passing &mdash; NJ Transit livery and route display visible from rear
+              <div class="media-bar"><a class="dl-btn" href="evidence/back-bus-passing.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download</a></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- DAMAGE -->
+  <section>
+    <h2>Damage Documentation</h2>
+    <p style="color:var(--muted); margin-bottom:0.5rem;">
+      Photograph taken after exiting the Holland Tunnel showing the left side mirror damage.
+    </p>
+    <img class="damage-img" src="evidence/mirror-damage.jpg" alt="Destroyed left side mirror on Tesla Model X" onclick="openLightbox(this)">
+    <p class="damage-caption">
+      Left side mirror of the 2026 Tesla Model X, destroyed by the open luggage bay door of NJ Transit Bus #22054.
+      Photo taken after exiting the tunnel.
+    </p>
+    <div class="media-bar">
+      <a class="dl-btn" href="evidence/mirror-damage.jpg" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download Photo</a>
+    </div>
+  </section>
+
+  <!-- REPAIR ESTIMATE -->
+  <section>
+    <h2>Repair Estimate</h2>
+    <p style="color:var(--muted); margin-bottom:1rem;">
+      Preliminary repair estimate prepared by Peotter's Auto Body (Summit, NJ) on March 13, 2026.
+      Point of impact: left side.
+    </p>
+    <div class="facts" style="margin-top:0;">
+      <div class="fact-card">
+        <div class="label">Estimated Total</div>
+        <div class="value highlight">$2,367.08</div>
+      </div>
+      <div class="fact-card">
+        <div class="label">Parts</div>
+        <div class="value">$995.00</div>
+      </div>
+      <div class="fact-card">
+        <div class="label">Labor</div>
+        <div class="value">$1,137.50</div>
+      </div>
+    </div>
+    <div class="narrative" style="margin-top:1rem;">
+      <strong>Repair line items:</strong>
+      <ul style="padding-left:1.25rem; margin-top:0.5rem; display:flex; flex-direction:column; gap:0.25rem;">
+        <li>Replace left mirror assembly &mdash; $920.00</li>
+        <li>Replace left mirror cover &mdash; $70.00</li>
+        <li>R&amp;I hood storage compartment, sight shield, fender ledge covers, trim panel, trim molding</li>
+        <li>Electrical: Tesla high voltage system isolation, diagnostic clear &amp; codes, service mode access, hard reset, firmware redeploy (4.4 hrs)</li>
+        <li>Clear coat, color tint/color match</li>
+        <li>Hazardous waste removal &mdash; $5.00</li>
+      </ul>
+      <div style="margin-top:0.75rem; font-size:0.85rem; color:var(--muted);">
+        Subtotal: $2,220.00 + Sales Tax (6.625%): $147.08 = <strong style="color:var(--accent);">Grand Total: $2,367.08</strong>
+      </div>
+    </div>
+    <div class="media-bar" style="margin-top:0.75rem;">
+      <a class="dl-btn" href="evidence/repair-estimate.pdf" download><svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 3a1 1 0 011 1v8.586l2.293-2.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 111.414-1.414L9 12.586V4a1 1 0 011-1z"/><path d="M3 16a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"/></svg> Download Full Estimate (PDF)</a>
+    </div>
+  </section>
+
+  <!-- KEY FINDINGS -->
+  <section>
+    <h2>Key Findings</h2>
+    <div class="narrative">
+      <ol style="padding-left:1.25rem; display:flex; flex-direction:column; gap:0.5rem;">
+        <li>The Tesla Model X was traveling in its lane in a normal, straight path through the Holland Tunnel. No lane change or evasive maneuver was made by the Tesla driver.</li>
+        <li>The NJ Transit bus (Route 163, #22054) had an unsecured luggage bay door that was open and protruding into the adjacent lane, creating a hazard for vehicles in that lane.</li>
+        <li>The open bay door struck and destroyed the Tesla's left side mirror as the bus passed alongside. The force of the impact swung the bay door shut.</li>
+        <li>The bus did not stop after the collision, constituting a hit-and-run.</li>
+        <li>Four simultaneous camera angles from the Tesla's dashcam system provide comprehensive, unambiguous documentation of the incident, the at-fault vehicle's identity (Route 163, Bus #22054), and the resulting damage.</li>
+      </ol>
+    </div>
+  </section>
+
+</div>
+
+<div class="footer">
+  Incident documentation prepared from Tesla dashcam recordings &mdash; March 2026
+</div>
+
+<script>
+function openLightbox(img) {
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightbox-img');
+  var lbDl = document.getElementById('lightbox-dl');
+  lbImg.src = img.src;
+  lbImg.alt = img.alt;
+  lbDl.href = img.src;
+  lbDl.download = img.src.split('/').pop();
+  lb.classList.add('active');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(e) {
+  if (e.target.tagName === 'IMG' || e.target.tagName === 'A') return;
+  var lb = document.getElementById('lightbox');
+  lb.classList.remove('active');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') {
+    document.getElementById('lightbox').classList.remove('active');
+    document.body.style.overflow = '';
+  }
+});
+
+/* Custom video player controls */
+var playIcon = '<svg viewBox="0 0 24 24" fill="currentColor"><polygon points="5,3 19,12 5,21"/></svg>';
+var pauseIcon = '<svg viewBox="0 0 24 24" fill="currentColor"><rect x="5" y="3" width="4" height="18"/><rect x="15" y="3" width="4" height="18"/></svg>';
+
+function fmtTime(s) {
+  var m = Math.floor(s / 60);
+  var sec = Math.floor(s % 60);
+  return m + ':' + (sec < 10 ? '0' : '') + sec;
+}
+
+document.querySelectorAll('.video-wrap').forEach(function(wrap) {
+  var video = wrap.querySelector('video');
+  var playBtn = wrap.querySelector('.play-btn');
+  var progress = wrap.querySelector('.video-progress');
+  var fill = wrap.querySelector('.video-progress-fill');
+  var timeDisplay = wrap.querySelector('.video-time');
+  var speedBtns = wrap.querySelectorAll('.speed-btn');
+  var fsBtn = wrap.querySelector('.fullscreen-btn');
+
+  // Apply default speed if set
+  var defaultSpeed = video.dataset.defaultSpeed;
+  if (defaultSpeed) {
+    video.playbackRate = parseFloat(defaultSpeed);
+  }
+
+  // Play/pause
+  playBtn.addEventListener('click', function() {
+    if (video.paused) { video.play(); } else { video.pause(); }
+  });
+  video.addEventListener('click', function() {
+    if (video.paused) { video.play(); } else { video.pause(); }
+  });
+  video.addEventListener('play', function() { playBtn.innerHTML = pauseIcon; });
+  video.addEventListener('pause', function() { playBtn.innerHTML = playIcon; });
+
+  // Time update
+  video.addEventListener('timeupdate', function() {
+    if (video.duration) {
+      fill.style.width = (video.currentTime / video.duration * 100) + '%';
+      timeDisplay.textContent = fmtTime(video.currentTime) + ' / ' + fmtTime(video.duration);
+    }
+  });
+  video.addEventListener('loadedmetadata', function() {
+    timeDisplay.textContent = '0:00 / ' + fmtTime(video.duration);
+  });
+
+  // Scrub
+  progress.addEventListener('click', function(e) {
+    var rect = progress.getBoundingClientRect();
+    var pct = (e.clientX - rect.left) / rect.width;
+    video.currentTime = pct * video.duration;
+  });
+
+  // Speed buttons
+  speedBtns.forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var speed = parseFloat(btn.dataset.speed);
+      video.playbackRate = speed;
+      wrap.querySelectorAll('.speed-btn').forEach(function(b) { b.classList.remove('active'); });
+      btn.classList.add('active');
+    });
+  });
+
+  // Fullscreen
+  fsBtn.addEventListener('click', function() {
+    if (wrap.requestFullscreen) { wrap.requestFullscreen(); }
+    else if (wrap.webkitRequestFullscreen) { wrap.webkitRequestFullscreen(); }
+  });
+});
+</script>
+
+</body>
+</html>
